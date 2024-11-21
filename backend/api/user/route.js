@@ -36,4 +36,12 @@ router.post('/edit', async(req,res)=>{
     //by id
 })
 
+router.post('/login', async(req,res) =>{
+
+    const email = req.body.email;
+    const password = req.body.password;
+
+
+});
+
 module.exports = router;

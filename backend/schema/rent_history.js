@@ -22,6 +22,10 @@ const rentHistorySchema = new mongoose.Schema({
     },
     actualReturnDate: {
         type: Date
+    },
+    isReturned: {
+        type: Boolean,
+        default: false
     }
 });
 
