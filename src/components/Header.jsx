@@ -30,10 +30,6 @@ import { Label } from "@/components/ui/label"
 
 const Header = ({ isLightTheme, toggleTheme, isLoggedIn }) => {
 
-    const login = () => {
-        
-    }
-
     const logout = () => {
         console.log('Close dialog');
     }
@@ -66,7 +62,7 @@ const Header = ({ isLightTheme, toggleTheme, isLoggedIn }) => {
             ) : (
               <Dialog>
                <DialogTrigger asChild>
-                 <Link onClick={login}>Login</Link>
+                 <Link>Login</Link>
                </DialogTrigger>
                <DialogContent className="sm:max-w-[425px]">
                  <DialogHeader>
@@ -87,16 +83,16 @@ const Header = ({ isLightTheme, toggleTheme, isLoggedIn }) => {
                       </CardHeader>
                       <CardContent className="space-y-2">
                         <div className="space-y-1">
-                          <Label htmlFor="name">Name</Label>
-                          <Input id="name" defaultValue="Pedro Duarte" />
+                          <Label htmlFor="login_email">Email</Label>
+                          <Input id="login_email" defaultValue="" />
                         </div>
                         <div className="space-y-1">
-                          <Label htmlFor="username">Username</Label>
-                          <Input id="username" defaultValue="@peduarte" />
+                          <Label htmlFor="password">Password</Label>
+                          <Input id="password" type="password" defaultValue="" />
                         </div>
                       </CardContent>
                       <CardFooter>
-                        <Button>Save changes</Button>
+                        <Button>Login</Button>
                       </CardFooter>
                     </Card>
                   </TabsContent>
@@ -110,16 +106,36 @@ const Header = ({ isLightTheme, toggleTheme, isLoggedIn }) => {
                       </CardHeader>
                       <CardContent className="space-y-2">
                         <div className="space-y-1">
-                          <Label htmlFor="current">Current password</Label>
-                          <Input id="current" type="password" />
+                          <Label htmlFor="email-register">Email</Label>
+                          <Input id="email-register" defaultValue=""/>
                         </div>
                         <div className="space-y-1">
-                          <Label htmlFor="new">New password</Label>
-                          <Input id="new" type="password" />
+                          <Label htmlFor="password-register">New password</Label>
+                          <Input id="password-register" type="password" />
+                        </div>
+                        <div className="space-y-1">
+                          <Label htmlFor="repeatpassword-register">Repeat password</Label>
+                          <Input id="repeatpassword-register" type="password" />
+                        </div>
+                        <div className="space-y-1">
+                          <Label htmlFor="name-register">Name</Label>
+                          <Input id="name-register" defaultValue=""/>
+                        </div>
+                        <div className="space-y-1">
+                          <Label htmlFor="surname-register">Surname</Label>
+                          <Input id="surname-register" defaultValue=""/>
+                        </div>
+                        <div className="space-y-1">
+                          <Label htmlFor="phone-register">Phone number</Label>
+                          <Input id="phone-register" defaultValue=""/>
+                        </div>
+                        <div className="space-y-1">
+                          <Label htmlFor="adress-register">Adress</Label>
+                          <Input id="adress-register" defaultValue=""/>
                         </div>
                       </CardContent>
                       <CardFooter>
-                        <Button>Save password</Button>
+                        <Button>Register</Button>
                       </CardFooter>
                     </Card>
                   </TabsContent>
