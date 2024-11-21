@@ -1,14 +1,28 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const app = express();
+require('dotenv').config();
 
+const bookRoutes = require('./api/book/route');
+const userRoutes = require('./api/user/route');
+
+const app = express();
 app.use(express.json());
 
-app.get('/api', (req, res) => {   // usunięte '/api'
-  res.send('<h1>hello</h1>');
-});
+
+mongoose.connect(process.env.MONGODB_URI)
+  .then(() => {
+    console.log('Connected to MongoDB');
+  })
+  .catch((error) => {
+    console.error('MongoDB connection error:', error);
+  });
+
+
+app.use('/api/book', bookRoutes);
+app.use('/api/user', userRoutes);
+
 
 const port = process.env.PORT || 5000;
-app.listen(port);
-
-console.log('hello from backend');
+app.listen(port, () => {
+    console.log(`Server running on port ${port}`);
+});
