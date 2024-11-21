@@ -118,11 +118,11 @@ const Header = ({ isLightTheme, toggleTheme, isLoggedIn }) => {
                           <Input id="repeatpassword-register" type="password" />
                         </div>
                         <div className="space-y-1">
-                          <Label htmlFor="name-register">Name</Label>
+                          <Label htmlFor="name-register">First name</Label>
                           <Input id="name-register" defaultValue=""/>
                         </div>
                         <div className="space-y-1">
-                          <Label htmlFor="surname-register">Surname</Label>
+                          <Label htmlFor="surname-register">Last name</Label>
                           <Input id="surname-register" defaultValue=""/>
                         </div>
                         <div className="space-y-1">

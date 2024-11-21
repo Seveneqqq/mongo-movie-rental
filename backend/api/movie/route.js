@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Movie = require('../../schema/movie');
 
-router.get('/', async (req, res) => {
+router.get('/get', async (req, res) => {
     try {
         const movies = await Movie.find();
         res.json(movies);
@@ -26,6 +26,14 @@ router.post('/add', async (req, res) => {
     } catch (error) {
         res.status(400).json({ message: error.message });
     }
+});
+
+router.delete('/delete', async (req, res) => {
+
+});
+
+router.post('/edit', async(req,res) =>{
+    
 });
 
 module.exports = router;

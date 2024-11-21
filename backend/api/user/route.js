@@ -3,7 +3,7 @@ const router = express.Router();
 const User = require('../../schema/user');
 const RentHistory = require('../../schema/rent_history');
 
-router.get('/', async (req, res) => {
+router.get('/get', async (req, res) => {
     try {
         const users = await User.find();
         res.json(users);
@@ -27,5 +27,13 @@ router.post('/add', async (req, res) => {
         res.status(400).json({ message: error.message });
     }
 });
+
+router.delete('/delete', async (req, res) => {
+    //by id
+});
+
+router.post('/edit', async(req,res)=>{
+    //by id
+})
 
 module.exports = router;
