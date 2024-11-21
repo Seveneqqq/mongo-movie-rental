@@ -62,11 +62,11 @@ const Header = ({ isLightTheme, toggleTheme, isLoggedIn }) => {
           </li>
           <li>
             {isLoggedIn ? (
-              <Link to="/" onClick={logout}>Logout</Link>
+              <Link onClick={logout}>Logout</Link>
             ) : (
               <Dialog>
                <DialogTrigger asChild>
-                 <Link to="/" onClick={login}>Login</Link>
+                 <Link onClick={login}>Login</Link>
                </DialogTrigger>
                <DialogContent className="sm:max-w-[425px]">
                  <DialogHeader>
