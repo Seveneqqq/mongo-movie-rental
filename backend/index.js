@@ -2,24 +2,25 @@ const express = require('express');
 const mongoose = require('mongoose');
 require('dotenv').config();
 
+const bookRoutes = require('./api/book/route');
+const userRoutes = require('./api/user/route');
+
 const app = express();
 app.use(express.json());
 
-const connectDB = async () => {
-    try {
-        const conn = await mongoose.connect(process.env.MONGODB_URI);
-        console.log(`MongoDB Connected`);
-    } catch (error) {
-        console.log(error);
-        process.exit(1);
-    }
-}
 
-connectDB();
+mongoose.connect(process.env.MONGODB_URI)
+  .then(() => {
+    console.log('Connected to MongoDB');
+  })
+  .catch((error) => {
+    console.error('MongoDB connection error:', error);
+  });
 
-app.get('/api', (req, res) => {   
-    res.send('<h1>hello from api</h1>');
-});
+
+app.use('/api/book', bookRoutes);
+app.use('/api/user', userRoutes);
+
 
 const port = process.env.PORT || 5000;
 app.listen(port, () => {
