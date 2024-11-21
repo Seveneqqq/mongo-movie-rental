@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../../schema/user');
+const RentHistory = require('../../schema/rent_history');
 
 router.get('/', async (req, res) => {
     try {

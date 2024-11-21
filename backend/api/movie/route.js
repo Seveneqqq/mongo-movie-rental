@@ -17,7 +17,6 @@ router.post('/add', async (req, res) => {
         author: req.body.author,
         description: req.body.description,
         publishedYear: req.body.publishedYear,
-        isbn: req.body.isbn,
         image: req.body.image || 'default-cover.jpg' 
     });
 

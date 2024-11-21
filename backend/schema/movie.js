@@ -5,25 +5,37 @@ const movieSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    author: {
+    genre: {
         type: String,
         required: true
     },
-    description: {
-        type: String
-    },
-    publishedYear: {
-        type: Number
-    },
-    isbn: {
+    director: {
         type: String,
-        unique: true
+        required: true
     },
+    duration: {
+        type: Number, // in minutes
+        required: true
+    },
+    rating: {
+        type: Number,
+        min: 1,
+        max: 10,
+        required: true
+    },
+    description: {
+        type: String,
+        required: true
+    },
+    actors: [{
+        type: String,
+        required: true
+    }],
     image: {
         type: String,
-        default: 'default-cover.jpg'  // domyślna okładka
+        default: 'default-movie.jpg'
     },
-    createdAt: {
+    addedDate: {
         type: Date,
         default: Date.now
     }
