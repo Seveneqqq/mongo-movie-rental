@@ -38,6 +38,10 @@ const movieSchema = new mongoose.Schema({
     addedDate: {
         type: Date,
         default: Date.now
+    },
+    rentedNow: {
+        type: Boolean,
+        default: false
     }
 });
 
