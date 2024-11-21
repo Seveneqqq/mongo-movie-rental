@@ -1,18 +1,18 @@
 const express = require('express');
 const router = express.Router();
-const Book = require('../../schema/book');
+const Movie = require('../../schema/movie');
 
 router.get('/', async (req, res) => {
     try {
-        const books = await Book.find();
-        res.json(books);
+        const movies = await Movie.find();
+        res.json(movies);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 });
 
 router.post('/add', async (req, res) => {
-    const book = new Book({
+    const movie = new Movie({
         title: req.body.title,
         author: req.body.author,
         description: req.body.description,
@@ -22,8 +22,8 @@ router.post('/add', async (req, res) => {
     });
 
     try {
-        const newBook = await book.save();
-        res.status(201).json(newBook);
+        const newMovie = await movie.save();
+        res.status(201).json(newMovie);
     } catch (error) {
         res.status(400).json({ message: error.message });
     }

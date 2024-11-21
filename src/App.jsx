@@ -53,18 +53,19 @@ function App() {
         </nav>
       </header>
 
-      <div class="grid grid-cols-12 gap-4">
+      <div className="py-10">
+        <div class="grid grid-cols-12 gap-4">
 
-        <div class="col-span-6 md:col-span-6 lg:col-span-3 rounded-[10px] h-[300px] bg-slate-500">d</div>
+          <div class="col-span-6 md:col-span-6 lg:col-span-3 rounded-[10px] h-[300px] bg-slate-500">d</div>
 
+        </div>
       </div>
-  
 
 
 
     <br/>
     <br/>
-      <p>Storebook with best programming books</p>
+      <p>Movie rental with best movies</p>
 
 
       <AlertDialogDemo />
