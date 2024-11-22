@@ -26,18 +26,8 @@ const userSchema = new mongoose.Schema({
         required: true
     },
     address: {
-        street: {
-            type: String,
-            required: true
-        },
-        city: {
-            type: String,
-            required: true
-        },
-        postalCode: {
-            type: String,
-            required: true
-        }
+        type: String,
+        required: true
     },
     phoneNumber: {
         type: String,
@@ -46,7 +36,13 @@ const userSchema = new mongoose.Schema({
     registrationDate: {
         type: Date,
         default: Date.now
-    }
+    },
+    role: {
+        type: String,
+        required: true,
+        enum: ['user', 'admin'], 
+        default: 'user' 
+    },
 });
 
 module.exports = mongoose.model('User', userSchema);
