@@ -72,6 +72,28 @@ function App() {
             />
           } 
         />
+        <Route 
+          path="/admin" 
+          element={
+            <Admin 
+              isLightTheme={isLightTheme} 
+              toggleTheme={toggleTheme}
+              isLoggedIn={isLoggedIn}
+              setIsLoggedIn={setIsLoggedIn}
+            />
+          } 
+        />
+        <Route 
+          path="/dashboard" 
+          element={
+            <Dashboard 
+              isLightTheme={isLightTheme} 
+              toggleTheme={toggleTheme}
+              isLoggedIn={isLoggedIn}
+              setIsLoggedIn={setIsLoggedIn}
+            />
+          } 
+        />
       </Routes>
     </Router>
   );

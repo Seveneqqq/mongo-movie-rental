@@ -79,7 +79,7 @@ const Header = ({ isLightTheme, toggleTheme, isLoggedIn, setIsLoggedIn }) => {
             <Link to="/released">Released</Link>
           </li>
           <li>
-            {isLoggedIn && <Link to="/account">Account</Link>}
+            {isLoggedIn && <Link to="/dashboard">Dashboard</Link>}
           </li>
         </ul>
         <ul className="flex gap-10 text-xl text-textColor items-center">
