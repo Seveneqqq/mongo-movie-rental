@@ -9,9 +9,6 @@ import Released from "./pages/released";
 import Dashboard from "./pages/dashboard";
 import Admin from "./pages/admin";
 
-// Components
-import { AlertDialogDemo } from "./components/AlertDialogDemo";
-import { Button } from "@/components/ui/button";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -39,6 +36,7 @@ function App() {
               isLightTheme={isLightTheme} 
               toggleTheme={toggleTheme}
               isLoggedIn={isLoggedIn}
+              setIsLoggedIn={setIsLoggedIn}
             />
           } 
         />
@@ -49,6 +47,7 @@ function App() {
               isLightTheme={isLightTheme} 
               toggleTheme={toggleTheme}
               isLoggedIn={isLoggedIn}
+              setIsLoggedIn={setIsLoggedIn}
             />
           } 
         />
@@ -59,6 +58,7 @@ function App() {
               isLightTheme={isLightTheme} 
               toggleTheme={toggleTheme}
               isLoggedIn={isLoggedIn}
+              setIsLoggedIn={setIsLoggedIn}
             />
           } 
         />

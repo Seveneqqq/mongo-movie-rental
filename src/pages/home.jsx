@@ -1,13 +1,14 @@
 import Header from '../components/Header';
 import { Button } from "@/components/ui/button";
 
-const Home = ({ isLightTheme, toggleTheme, isLoggedIn }) => {
+const Home = ({ isLightTheme, toggleTheme, isLoggedIn, setIsLoggedIn }) => {
   return (
     <>
       <Header 
         isLightTheme={isLightTheme} 
         toggleTheme={toggleTheme}
         isLoggedIn={isLoggedIn}
+        setIsLoggedIn={setIsLoggedIn} 
       />
       
       <div className="py-10">

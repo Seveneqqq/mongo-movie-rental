@@ -1,5 +1,6 @@
 import { MdOutlineNightlight, MdOutlineLightMode } from "react-icons/md";
 import { Link } from "react-router-dom";
+import { useState } from 'react';
 
 import { Button } from "@/components/ui/button"
 import {
@@ -28,7 +29,38 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
-const Header = ({ isLightTheme, toggleTheme, isLoggedIn }) => {
+const Header = ({ isLightTheme, toggleTheme, isLoggedIn, setIsLoggedIn }) => {
+    
+    const [loginEmail, setLoginEmail] = useState('');
+    const [loginPassword, setLoginPassword] = useState('');
+    
+    
+    const handleLogin = async () => {
+        try {
+            const response = await fetch('http://localhost:5000/api/user/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    "email": loginEmail,
+                    "password": loginPassword
+                })
+            });
+
+            const data = await response.json();
+            
+            if (data.login) {
+                console.log('Login successful!');
+                console.log('User role:', data.role);
+                setIsLoggedIn(true);
+            } else {
+                console.log('Login failed:', data.message);
+            }
+        } catch (error) {
+            console.error('Login error:', error);
+        }
+    };
 
     const logout = () => {
         console.log('Close dialog');
@@ -84,15 +116,24 @@ const Header = ({ isLightTheme, toggleTheme, isLoggedIn }) => {
                       <CardContent className="space-y-2">
                         <div className="space-y-1">
                           <Label htmlFor="login_email">Email</Label>
-                          <Input id="login_email" defaultValue="" />
+                          <Input 
+                            id="login_email" 
+                            value={loginEmail}
+                            onChange={(e) => setLoginEmail(e.target.value)}
+                          />
                         </div>
                         <div className="space-y-1">
                           <Label htmlFor="password">Password</Label>
-                          <Input id="password" type="password" defaultValue="" />
+                          <Input 
+                            id="password" 
+                            type="password" 
+                            value={loginPassword}
+                            onChange={(e) => setLoginPassword(e.target.value)}
+                          />
                         </div>
                       </CardContent>
                       <CardFooter>
-                        <Button>Login</Button>
+                        <Button onClick={handleLogin}>Login</Button>
                       </CardFooter>
                     </Card>
                   </TabsContent>
@@ -147,7 +188,6 @@ const Header = ({ isLightTheme, toggleTheme, isLoggedIn }) => {
         </ul>
       </nav>
     </header>
-    
   );
 };
 

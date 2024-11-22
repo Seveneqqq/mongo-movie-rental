@@ -13,7 +13,7 @@ router.get('/get', async (req, res) => {
     }
 });
 
-router.post('/add', async (req, res) => {
+router.post('/register', async (req, res) => {
     try {
         
         const allowedRoles = ['user', 'admin'];
@@ -106,7 +106,6 @@ router.post('/login', async (req, res) => {
             });
         }
 
-        
         res.status(200).json({
             "login": true,
             "role": user.role
