@@ -54,6 +54,8 @@ const Header = ({ isLightTheme, toggleTheme, isLoggedIn, setIsLoggedIn }) => {
                 console.log('Login successful!');
                 console.log('User role:', data.role);
                 setIsLoggedIn(true);
+                sessionStorage.setItem('isLoggedIn','true');
+                sessionStorage.setItem('role', data.role)
             } else {
                 console.log('Login failed:', data.message);
             }

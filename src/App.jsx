@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./App.css";
 
@@ -13,6 +13,16 @@ import Admin from "./pages/admin";
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isLightTheme, setIsLightTheme] = useState(false);
+  const [role, setRole] = useState("");
+
+  useEffect(() => {
+    if(sessionStorage.getItem("isLoggedIn") == "true"){
+        setIsLoggedIn(true);
+      }
+    if(sessionStorage.getItem("role")){
+      setRole(sessionStorage.getItem("role"));
+    }
+  },[]);
 
   const toggleTheme = () => {
     setIsLightTheme(prev => {
