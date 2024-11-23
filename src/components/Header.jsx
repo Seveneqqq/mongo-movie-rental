@@ -30,10 +30,70 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
 const Header = ({ isLightTheme, toggleTheme, isLoggedIn, setIsLoggedIn }) => {
-    
     const [loginEmail, setLoginEmail] = useState('');
     const [loginPassword, setLoginPassword] = useState('');
     
+    const [registerEmail, setRegisterEmail] = useState('');
+    const [registerPassword, setRegisterPassword] = useState('');
+    const [repeatPassword, setRepeatPassword] = useState('');
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [phoneNumber, setPhoneNumber] = useState('');
+    const [address, setAddress] = useState('');
+    
+    const handleRegister = async () => {
+      
+        if (registerPassword !== repeatPassword) {
+            console.error('Passwords do not match');
+            return;
+        }
+
+        try {
+            const response = await fetch('http://localhost:5000/api/user/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    email: registerEmail,
+                    password: registerPassword,
+                    firstName: firstName,
+                    lastName: lastName,
+                    phoneNumber: phoneNumber,
+                    address: address
+                })
+            });
+
+            const data = await response.json();
+            
+            if (response.status === 201) {
+                console.log('Registration successful!');
+                const loginResponse = await fetch('http://localhost:5000/api/user/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: registerEmail,
+                        password: registerPassword
+                    })
+                });
+
+                const loginData = await loginResponse.json();
+                
+                if (loginData.login) {
+                    setIsLoggedIn(true);
+                    sessionStorage.setItem('userId', loginData.userId);
+                    sessionStorage.setItem('isLoggedIn', 'true');
+                    sessionStorage.setItem('role', loginData.role);
+                }
+            } else {
+                console.error('Registration failed:', data.message);
+            }
+        } catch (error) {
+            console.error('Registration error:', error);
+        }
+    };
     
     const handleLogin = async () => {
         try {
@@ -43,8 +103,8 @@ const Header = ({ isLightTheme, toggleTheme, isLoggedIn, setIsLoggedIn }) => {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    "email": loginEmail,
-                    "password": loginPassword
+                    email: loginEmail,
+                    password: loginPassword
                 })
             });
 
@@ -53,9 +113,10 @@ const Header = ({ isLightTheme, toggleTheme, isLoggedIn, setIsLoggedIn }) => {
             if (data.login) {
                 console.log('Login successful!');
                 console.log('User role:', data.role);
+                sessionStorage.setItem('userId', data.userId);
                 setIsLoggedIn(true);
                 sessionStorage.setItem('isLoggedIn','true');
-                sessionStorage.setItem('role', data.role)
+                sessionStorage.setItem('role', data.role);
             } else {
                 console.log('Login failed:', data.message);
             }
@@ -65,7 +126,9 @@ const Header = ({ isLightTheme, toggleTheme, isLoggedIn, setIsLoggedIn }) => {
     };
 
     const logout = () => {
-        console.log('Close dialog');
+        setIsLoggedIn(false);
+        sessionStorage.removeItem('isLoggedIn');
+        sessionStorage.removeItem('role');
     }
 
   return (
@@ -79,7 +142,7 @@ const Header = ({ isLightTheme, toggleTheme, isLoggedIn, setIsLoggedIn }) => {
             <Link to="/released">Released</Link>
           </li>
           <li>
-            {isLoggedIn && <Link to="/account">Account</Link>}
+            {isLoggedIn && <Link to="/dashboard">Dashboard</Link>}
           </li>
         </ul>
         <ul className="flex gap-10 text-xl text-textColor items-center">
@@ -150,35 +213,65 @@ const Header = ({ isLightTheme, toggleTheme, isLoggedIn, setIsLoggedIn }) => {
                       <CardContent className="space-y-2">
                         <div className="space-y-1">
                           <Label htmlFor="email-register">Email</Label>
-                          <Input id="email-register" defaultValue=""/>
+                          <Input 
+                            id="email-register"
+                            value={registerEmail}
+                            onChange={(e) => setRegisterEmail(e.target.value)}
+                          />
                         </div>
                         <div className="space-y-1">
                           <Label htmlFor="password-register">New password</Label>
-                          <Input id="password-register" type="password" />
+                          <Input 
+                            id="password-register" 
+                            type="password"
+                            value={registerPassword}
+                            onChange={(e) => setRegisterPassword(e.target.value)}
+                          />
                         </div>
                         <div className="space-y-1">
                           <Label htmlFor="repeatpassword-register">Repeat password</Label>
-                          <Input id="repeatpassword-register" type="password" />
+                          <Input 
+                            id="repeatpassword-register" 
+                            type="password"
+                            value={repeatPassword}
+                            onChange={(e) => setRepeatPassword(e.target.value)}
+                          />
                         </div>
                         <div className="space-y-1">
                           <Label htmlFor="name-register">First name</Label>
-                          <Input id="name-register" defaultValue=""/>
+                          <Input 
+                            id="name-register"
+                            value={firstName}
+                            onChange={(e) => setFirstName(e.target.value)}
+                          />
                         </div>
                         <div className="space-y-1">
                           <Label htmlFor="surname-register">Last name</Label>
-                          <Input id="surname-register" defaultValue=""/>
+                          <Input 
+                            id="surname-register"
+                            value={lastName}
+                            onChange={(e) => setLastName(e.target.value)}
+                          />
                         </div>
                         <div className="space-y-1">
                           <Label htmlFor="phone-register">Phone number</Label>
-                          <Input id="phone-register" defaultValue=""/>
+                          <Input 
+                            id="phone-register"
+                            value={phoneNumber}
+                            onChange={(e) => setPhoneNumber(e.target.value)}
+                          />
                         </div>
                         <div className="space-y-1">
-                          <Label htmlFor="adress-register">Adress</Label>
-                          <Input id="adress-register" defaultValue=""/>
+                          <Label htmlFor="address-register">Address</Label>
+                          <Input 
+                            id="address-register"
+                            value={address}
+                            onChange={(e) => setAddress(e.target.value)}
+                          />
                         </div>
                       </CardContent>
                       <CardFooter>
-                        <Button>Register</Button>
+                        <Button onClick={handleRegister}>Register</Button>
                       </CardFooter>
                     </Card>
                   </TabsContent>
