@@ -83,6 +83,7 @@ const Header = ({ isLightTheme, toggleTheme, isLoggedIn, setIsLoggedIn }) => {
                 
                 if (loginData.login) {
                     setIsLoggedIn(true);
+                    sessionStorage.setItem('userId', loginData.userId);
                     sessionStorage.setItem('isLoggedIn', 'true');
                     sessionStorage.setItem('role', loginData.role);
                 }
@@ -112,6 +113,7 @@ const Header = ({ isLightTheme, toggleTheme, isLoggedIn, setIsLoggedIn }) => {
             if (data.login) {
                 console.log('Login successful!');
                 console.log('User role:', data.role);
+                sessionStorage.setItem('userId', data.userId);
                 setIsLoggedIn(true);
                 sessionStorage.setItem('isLoggedIn','true');
                 sessionStorage.setItem('role', data.role);

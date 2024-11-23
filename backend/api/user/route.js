@@ -94,6 +94,7 @@ router.post('/login', async (req, res) => {
         }
 
         res.status(200).json({
+            userId:user.id,
             login: true,
             role: user.role
         });

@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const Movie = require('../../schema/movie');
-
+const User = require('../../schema/user');
+const RentHistory = require('../../schema/rent_history');
 router.get('/get', async (req, res) => {
     try {
         const movies = await Movie.find();
@@ -10,6 +11,92 @@ router.get('/get', async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 });
+const RENT_LIMIT = 2; 
+const RENT_DURATION_DAYS = 2; 
+
+router.post('/rent', async (req, res) => {
+    try {
+        const { movieId, userId } = req.body;
+
+        const movie = await Movie.findById(movieId);
+        if (!movie) {
+            return res.status(404).json({
+                success: false,
+                message: 'Movie not found'
+            });
+        }
+
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: 'User not found'
+            });
+        }
+
+        if (movie.rentedNow) {
+            return res.status(400).json({
+                success: false,
+                message: 'Movie is currently rented'
+            });
+        }
+
+        const activeRentals = await RentHistory.countDocuments({
+            user: userId,
+            isReturned: false
+        });
+
+        if (activeRentals >= RENT_LIMIT) {
+            return res.status(400).json({
+                success: false,
+                message: `User has reached the maximum rental limit of ${RENT_LIMIT} movies`
+            });
+        }
+
+        const rentedAt = new Date();
+        const plannedReturnDate = new Date(rentedAt);
+        plannedReturnDate.setDate(plannedReturnDate.getDate() + RENT_DURATION_DAYS);
+
+        const rentHistory = new RentHistory({
+            user: userId,
+            movie: movieId,
+            rentedAt: rentedAt,
+            plannedReturnDate: plannedReturnDate,
+            isReturned: false
+        });
+
+        movie.rentedNow = true;
+
+        await Promise.all([
+            rentHistory.save(),
+            movie.save()
+        ]);
+
+        const populatedRentHistory = await RentHistory.findById(rentHistory._id)
+            .populate('user', 'firstName lastName email')
+            .populate('movie', 'title');
+
+        res.status(200).json({
+            success: true,
+            message: 'Movie rented successfully',
+            rentDetails: {
+                movie: populatedRentHistory.movie,
+                user: populatedRentHistory.user,
+                rentedAt: populatedRentHistory.rentedAt,
+                plannedReturnDate: populatedRentHistory.plannedReturnDate
+            }
+        });
+
+    } catch (error) {
+        console.error('Rent error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error while renting movie',
+            error: error.message
+        });
+    }
+});
+
 router.post('/add', async (req, res) => {
     try {
         const movie = new Movie({
@@ -30,7 +117,7 @@ router.post('/add', async (req, res) => {
             movie: newMovie
         });
     } catch (error) {
-        // Obsługa specyficznych błędów
+
         if (error.code === 11000) {
             return res.status(400).json({
                 message: 'Movie with this title already exists',
@@ -45,7 +132,6 @@ router.post('/add', async (req, res) => {
             });
         }
 
-        // Ogólny błąd
         res.status(500).json({
             message: 'Error adding movie',
             error: error.message
