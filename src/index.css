@@ -6,7 +6,7 @@
   :root {
     --text-color: #374150;
     --font-sans: "Inter", sans-serif;
-    --background: 0 0% 100%;
+    /* --background: 0 0% 100%;
     --foreground: 222.2 47.4% 11.2%;
 
     --muted: 210 40% 96.1%;
@@ -35,7 +35,30 @@
 
     --ring: 215 20.2% 65.1%;
 
+    --radius: 0.5rem; */
+
+
+    --background: 262 78% 93%;
+    --foreground: 262 5% 10%;
+    --card: 262 50% 95%;
+    --card-foreground: 262 5% 15%;
+    --popover: 262 78% 95%;
+    --popover-foreground: 262 95% 10%;
+    --primary: 262 59% 51%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 262 30% 90%;
+    --secondary-foreground: 0 0% 0%;
+    --muted: 224 30% 95%;
+    --muted-foreground: 262 5% 40%;
+    --accent: 224 30% 90%;
+    --accent-foreground: 262 5% 15%;
+    --destructive: 0 78% 50%;
+    --destructive-foreground: 262 5% 95%;
+    --border: 262 30% 82%;
+    --input: 262 30% 50%;
+    --ring: 262 59% 51%;
     --radius: 0.5rem;
+
   }
 
   .dark {

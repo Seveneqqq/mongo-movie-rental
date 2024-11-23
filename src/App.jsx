@@ -1,78 +1,79 @@
-import { useState } from "react";
-
+import { useState, useEffect } from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./App.css";
-import { AlertDialogDemo } from "./components/AlertDialogDemo";
-import { Button } from "@/components/ui/button"
 
-import { MdOutlineNightlight } from "react-icons/md";
-import { MdOutlineLightMode } from "react-icons/md";
+// Pages
+import Home from "./pages/home";
+import Movie from "./pages/movie";
+import Released from "./pages/released";
+import Dashboard from "./pages/dashboard";
+import Admin from "./pages/admin";
 
 
 function App() {
-
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isLightTheme, setIsLightTheme] = useState(false);
-  
-  const toogleTheme = () => {
+  const [role, setRole] = useState("");
 
-    const newTheme = !isLightTheme;
-    console.log(newTheme);
-    setIsLightTheme(newTheme);
+  useEffect(() => {
+    if(sessionStorage.getItem("isLoggedIn") == "true"){
+        setIsLoggedIn(true);
+      }
+    if(sessionStorage.getItem("role")){
+      setRole(sessionStorage.getItem("role"));
+    }
+  },[]);
 
-    if(newTheme){
-      document.querySelector('html').classList.remove('dark');
-    }
-    else{
-      document.querySelector('html').classList.add('dark');
-    }
-  }
+  const toggleTheme = () => {
+    setIsLightTheme(prev => {
+      const newTheme = !prev;
+      if (newTheme) {
+        document.querySelector('html').classList.remove('dark');
+      } else {
+        document.querySelector('html').classList.add('dark');
+      }
+      return newTheme;
+    });
+  };
 
   return (
-    <>
-      <header>
-        <nav className="flex justify-between">
-          <ul className="flex gap-10 text-xl text-textColor items-center">
-            <li>
-              <a href="/">Browse</a>
-            </li>
-            <li>
-              <a href="/released">Released</a>
-            </li>
-            <li>
-              <a href="/account">Account</a>
-            </li>
-          </ul>
-          <ul className="flex gap-10 text-xl text-textColor items-center">
-            <li>
-              {isLightTheme ? <MdOutlineNightlight onClick={toogleTheme} /> : <MdOutlineLightMode onClick={toogleTheme} /> }
-            </li>
-            <li>
-              {isLoggedIn ? <a href="/logout">Logout</a> : <a href="/login">Login</a>}
-            </li>
-          </ul>
-        </nav>
-      </header>
-
-      <div class="grid grid-cols-12 gap-4">
-
-        <div class="col-span-6 md:col-span-6 lg:col-span-3 rounded-[10px] h-[300px] bg-slate-500">d</div>
-
-      </div>
-  
-
-
-
-    <br/>
-    <br/>
-      <p>Storebook with best programming books</p>
-
-
-      <AlertDialogDemo />
-      <Button >Button</Button>
-      <Button variant="secondary">Button</Button>
-      <Button variant="outline">Button</Button>
-
-    </>
+    <Router>
+      <Routes>
+        <Route 
+          path="/" 
+          element={
+            <Home 
+              isLightTheme={isLightTheme} 
+              toggleTheme={toggleTheme}
+              isLoggedIn={isLoggedIn}
+              setIsLoggedIn={setIsLoggedIn}
+            />
+          } 
+        />
+        <Route 
+          path="/movie" 
+          element={
+            <Movie 
+              isLightTheme={isLightTheme} 
+              toggleTheme={toggleTheme}
+              isLoggedIn={isLoggedIn}
+              setIsLoggedIn={setIsLoggedIn}
+            />
+          } 
+        />
+        <Route 
+          path="/released" 
+          element={
+            <Released 
+              isLightTheme={isLightTheme} 
+              toggleTheme={toggleTheme}
+              isLoggedIn={isLoggedIn}
+              setIsLoggedIn={setIsLoggedIn}
+            />
+          } 
+        />
+      </Routes>
+    </Router>
   );
 }
 
