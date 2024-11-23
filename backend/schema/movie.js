@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const movieSchema = new mongoose.Schema({
     title: {
         type: String,
+        unique: true,
         required: true
     },
     genre: {
@@ -14,7 +15,7 @@ const movieSchema = new mongoose.Schema({
         required: true
     },
     duration: {
-        type: Number, // in minutes
+        type: Number,
         required: true
     },
     rating: {
