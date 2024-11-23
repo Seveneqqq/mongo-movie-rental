@@ -139,12 +139,64 @@ router.post('/add', async (req, res) => {
     }
 });
 
-router.delete('/delete', async (req, res) => {
-
+router.delete('/delete/:id', async (req, res) => {
+    try {
+        const movie = await Movie.findByIdAndDelete(req.params.id);
+        if (!movie) {
+            return res.status(404).json({
+                success: false,
+                message: 'Movie not found'
+            });
+        }
+        res.json({
+            success: true,
+            message: 'Movie deleted successfully'
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Error deleting movie',
+            error: error.message
+        });
+    }
 });
 
-router.post('/edit', async(req,res) =>{
-    
+router.put('/edit/:id', async(req, res) => {
+    try {
+        const movie = await Movie.findByIdAndUpdate(
+            req.params.id,
+            {
+                title: req.body.title,
+                genre: req.body.genre,
+                director: req.body.director,
+                duration: req.body.duration,
+                rating: req.body.rating,
+                description: req.body.description,
+                actors: req.body.actors,
+                image: req.body.image
+            },
+            { new: true, runValidators: true }
+        );
+
+        if (!movie) {
+            return res.status(404).json({
+                success: false,
+                message: 'Movie not found'
+            });
+        }
+
+        res.json({
+            success: true,
+            message: 'Movie updated successfully',
+            movie: movie
+        });
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: 'Error updating movie',
+            error: error.message
+        });
+    }
 });
 
 module.exports = router;

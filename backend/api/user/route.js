@@ -4,15 +4,17 @@ const User = require('../../schema/user');
 const RentHistory = require('../../schema/rent_history');
 const bcrypt = require('bcrypt');
 
+// Pobierz wszystkich użytkowników
 router.get('/get', async (req, res) => {
     try {
-        const users = await User.find();
+        const users = await User.find().select('-password'); // Nie zwracaj hasła
         res.json(users);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 });
 
+// Rejestracja
 router.post('/register', async (req, res) => {
     try {
         const allowedRoles = ['user', 'admin'];
@@ -66,6 +68,7 @@ router.post('/register', async (req, res) => {
     }
 });
 
+// Logowanie
 router.post('/login', async (req, res) => {
     try {
         if (!req.body.email || !req.body.password) {
@@ -94,7 +97,7 @@ router.post('/login', async (req, res) => {
         }
 
         res.status(200).json({
-            userId:user.id,
+            userId: user.id,
             login: true,
             role: user.role
         });
@@ -107,41 +110,113 @@ router.post('/login', async (req, res) => {
     }
 });
 
-router.delete('/delete', async (req, res) => {
+// Usuwanie użytkownika
+router.delete('/delete/:id', async (req, res) => {
     try {
-        const user = await User.findByIdAndDelete(req.params.id);
+        const user = await User.findById(req.params.id);
+        
         if (!user) {
-            return res.status(404).json({ message: 'User not found' });
+            return res.status(404).json({ 
+                success: false,
+                message: 'User not found' 
+            });
         }
-        res.json({ message: 'User deleted successfully' });
+
+        // Najpierw sprawdź czy użytkownik ma aktywne wypożyczenia
+        const activeRentals = await RentHistory.find({
+            user: req.params.id,
+            isReturned: false
+        });
+
+        if (activeRentals.length > 0) {
+            return res.status(400).json({
+                success: false,
+                message: 'Cannot delete user with active rentals'
+            });
+        }
+
+        await User.findByIdAndDelete(req.params.id);
+
+        res.json({ 
+            success: true,
+            message: 'User deleted successfully' 
+        });
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        res.status(500).json({ 
+            success: false,
+            message: error.message 
+        });
     }
 });
 
-router.put('/edit', async (req, res) => {
+// Edycja użytkownika
+router.put('/edit/:id', async (req, res) => {
     try {
         const updates = { ...req.body };
-        if (updates.password) {
+        
+        // Jeśli jest nowe hasło, zahaszuj je
+        if (updates.password && updates.password.trim() !== '') {
             updates.password = await bcrypt.hash(updates.password, 10);
+        } else {
+            // Jeśli nie ma nowego hasła, nie aktualizuj go
+            delete updates.password;
         }
         
+        // Usuń pola, których nie chcemy aktualizować
+        delete updates._id;
+        delete updates.role; // Nie pozwalamy na zmianę roli w tym endpoincie
+
         const user = await User.findByIdAndUpdate(
             req.params.id,
-            updates,
-            { new: true, runValidators: true }
+            { $set: updates },
+            { 
+                new: true, 
+                runValidators: true,
+                select: '-password' // Nie zwracaj hasła w odpowiedzi
+            }
         );
         
         if (!user) {
-            return res.status(404).json({ message: 'User not found' });
+            return res.status(404).json({ 
+                success: false,
+                message: 'User not found' 
+            });
         }
         
-        const userResponse = user.toObject();
-        delete userResponse.password;
-        
-        res.json(userResponse);
+        res.json({
+            success: true,
+            message: 'User updated successfully',
+            user: user
+        });
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        console.error('Update error:', error);
+        res.status(500).json({ 
+            success: false,
+            message: 'Error updating user',
+            error: error.message 
+        });
+    }
+});
+
+// Opcjonalnie: Pobranie pojedynczego użytkownika
+router.get('/get/:id', async (req, res) => {
+    try {
+        const user = await User.findById(req.params.id).select('-password');
+        if (!user) {
+            return res.status(404).json({ 
+                success: false,
+                message: 'User not found' 
+            });
+        }
+        res.json({
+            success: true,
+            user: user
+        });
+    } catch (error) {
+        res.status(500).json({ 
+            success: false,
+            message: error.message 
+        });
     }
 });
 
