@@ -276,11 +276,11 @@ const Dashboard = ({ isLightTheme, toggleTheme, isLoggedIn, setIsLoggedIn }) => 
               <TableHeader>
                 <TableRow>
                   <TableHead className="w-[100px]">Image</TableHead>
-                  <TableHead>Title</TableHead>
-                  <TableHead>Genre</TableHead>
-                  <TableHead>Rented Date</TableHead>
-                  <TableHead>Return Date</TableHead>
-                  <TableHead>Status</TableHead>
+                  <TableHead className="text-center">Title</TableHead>
+                  <TableHead className="text-center">Genre</TableHead>
+                  <TableHead className="text-center">Rented Date</TableHead>
+                  <TableHead className="text-center">Return Date</TableHead>
+                  <TableHead className="text-center">Status</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -333,10 +333,10 @@ const Dashboard = ({ isLightTheme, toggleTheme, isLoggedIn, setIsLoggedIn }) => 
               <TableHeader>
                 <TableRow>
                   <TableHead className="w-[100px]">Image</TableHead>
-                  <TableHead>Title</TableHead>
-                  <TableHead>Genre</TableHead>
-                  <TableHead>Rented Date</TableHead>
-                  <TableHead>Returned Date</TableHead>
+                  <TableHead className="text-center">Title</TableHead>
+                  <TableHead className="text-center">Genre</TableHead>
+                  <TableHead className="text-center">Rented Date</TableHead>
+                  <TableHead className="text-center">Returned Date</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -388,11 +388,11 @@ const Dashboard = ({ isLightTheme, toggleTheme, isLoggedIn, setIsLoggedIn }) => 
                     <Table>
                       <TableHeader>
                         <TableRow>
-                          <TableHead>Name</TableHead>
-                          <TableHead>Email</TableHead>
-                          <TableHead>Phone</TableHead>
-                          <TableHead>Role</TableHead>
-                          <TableHead>Actions</TableHead>
+                          <TableHead className="text-center">Name</TableHead>
+                          <TableHead className="text-center">Email</TableHead>
+                          <TableHead className="text-center">Phone</TableHead>
+                          <TableHead className="text-center">Role</TableHead>
+                          <TableHead className="text-center">Actions</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
@@ -442,11 +442,11 @@ const Dashboard = ({ isLightTheme, toggleTheme, isLoggedIn, setIsLoggedIn }) => 
                     <Table>
                       <TableHeader>
                         <TableRow>
-                          <TableHead>Image</TableHead>
-                          <TableHead>Title</TableHead>
-                          <TableHead>Genre</TableHead>
-                          <TableHead>Director</TableHead>
-                          <TableHead>Actions</TableHead>
+                          <TableHead className="text-center">Image</TableHead>
+                          <TableHead className="text-center">Title</TableHead>
+                          <TableHead className="text-center">Genre</TableHead>
+                          <TableHead className="text-center">Director</TableHead>
+                          <TableHead className="text-center">Actions</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
