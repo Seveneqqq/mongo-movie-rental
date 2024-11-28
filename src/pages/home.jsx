@@ -2,6 +2,14 @@ import { useState, useEffect } from 'react';
 import Header from '../components/Header';
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Tooltip,
   TooltipContent,
@@ -21,10 +29,55 @@ const Home = ({ isLightTheme, toggleTheme, isLoggedIn, setIsLoggedIn }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedMovie, setSelectedMovie] = useState(null);
+  
+  // Search and filter states
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedGenre, setSelectedGenre] = useState('all');
+  const [sortOrder, setSortOrder] = useState('titleAsc');
+  const [filteredMovies, setFilteredMovies] = useState([]);
 
   useEffect(() => {
     fetchMovies();
   }, []);
+
+  // Apply filters and sorting
+  useEffect(() => {
+    let filtered = [...movies];
+    
+    // Apply search filter
+    if (searchQuery) {
+      filtered = filtered.filter(movie =>
+        movie.title.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+    
+    // Apply genre filter
+    if (selectedGenre !== 'all') {
+      filtered = filtered.filter(movie => movie.genre === selectedGenre);
+    }
+    
+    // Apply sorting
+    filtered.sort((a, b) => {
+      switch (sortOrder) {
+        case 'titleAsc':
+          return a.title.localeCompare(b.title);
+        case 'titleDesc':
+          return b.title.localeCompare(a.title);
+        case 'ratingDesc':
+          return b.rating - a.rating;
+        case 'ratingAsc':
+          return a.rating - b.rating;
+        case 'durationAsc':
+          return a.duration - b.duration;
+        case 'durationDesc':
+          return b.duration - a.duration;
+        default:
+          return 0;
+      }
+    });
+    
+    setFilteredMovies(filtered);
+  }, [movies, searchQuery, selectedGenre, sortOrder]);
 
   const fetchMovies = async () => {
     try {
@@ -46,7 +99,6 @@ const Home = ({ isLightTheme, toggleTheme, isLoggedIn, setIsLoggedIn }) => {
   };
 
   const handleRent = async (movieId, e) => {
-
     console.log(`Movie ${movieId}`);
 
     if (e) {
@@ -83,6 +135,9 @@ const Home = ({ isLightTheme, toggleTheme, isLoggedIn, setIsLoggedIn }) => {
     }
   };
 
+  // Get unique genres from movies
+  const uniqueGenres = [...new Set(movies.map(movie => movie.genre))];
+
   if (loading) {
     return <div className="flex justify-center items-center min-h-screen">Loading...</div>;
   }
@@ -103,8 +158,48 @@ const Home = ({ isLightTheme, toggleTheme, isLoggedIn, setIsLoggedIn }) => {
       <div className="container mx-auto px-4 py-6 md:py-10">
         <h1 className="text-2xl md:text-3xl font-bold mb-6 md:mb-8 text-center">Available Movies</h1>
         
+        {/* Search and Filter Section */}
+        <div className="mb-6 space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <Input
+              placeholder="Search movies..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full"
+            />
+            
+            <Select value={selectedGenre} onValueChange={setSelectedGenre}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select genre" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All Genres</SelectItem>
+                {uniqueGenres.map(genre => (
+                  <SelectItem key={genre} value={genre}>
+                    {genre}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            
+            <Select value={sortOrder} onValueChange={setSortOrder}>
+              <SelectTrigger>
+                <SelectValue placeholder="Sort by..." />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="titleAsc">Title (A-Z)</SelectItem>
+                <SelectItem value="titleDesc">Title (Z-A)</SelectItem>
+                <SelectItem value="ratingDesc">Rating (High to Low)</SelectItem>
+                <SelectItem value="ratingAsc">Rating (Low to High)</SelectItem>
+                <SelectItem value="durationDesc">Duration (Longest)</SelectItem>
+                <SelectItem value="durationAsc">Duration (Shortest)</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+        
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-          {movies.map((movie) => (
+          {filteredMovies.map((movie) => (
             <Card 
               key={movie._id} 
               className="flex flex-col overflow-hidden bg-card hover:shadow-lg transition-shadow dark:bg-gray-800/40 cursor-pointer"
@@ -170,10 +265,10 @@ const Home = ({ isLightTheme, toggleTheme, isLoggedIn, setIsLoggedIn }) => {
           ))}
         </div>
 
-        {movies.length === 0 && (
+        {filteredMovies.length === 0 && (
           <div className="text-center py-8 md:py-10">
             <p className="text-lg md:text-xl text-muted-foreground">
-              No movies available at the moment.
+              No movies found matching your criteria.
             </p>
           </div>
         )}
