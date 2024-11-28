@@ -31,6 +31,7 @@ import {
 
 const Dashboard = ({ isLightTheme, toggleTheme, isLoggedIn, setIsLoggedIn }) => {
   const [rentalHistory, setRentalHistory] = useState(null);
+  const [fullRentalHistory, setFullRentalHistory] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -58,8 +59,47 @@ const Dashboard = ({ isLightTheme, toggleTheme, isLoggedIn, setIsLoggedIn }) => 
     if (sessionStorage.getItem('role') === 'admin') {
       fetchUsers();
       fetchAllMovies();
+      fetchAllRentals();
     }
   }, []);
+
+  const fetchAllRentals = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/api/movie/get-full-history');
+      if (!response.ok) {
+        throw new Error('Failed to fetch rental history');
+      }
+      const data = await response.json();
+      setFullRentalHistory(data.rentals);
+    } catch (error) {
+      console.error('Error fetching rental history:', error);
+    }
+  };
+
+  const handleReturnMovie = async (rentalId, movieId) => {
+    console.log(rentalId)
+    console.log(movieId)
+    console.log(movieId.id)
+    try {
+      const response = await fetch(`http://localhost:5000/api/movie/return`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ movieId })
+      });
+
+      if (response.ok) {
+        await fetchRentalHistory();
+        
+      } else {
+        const error = await response.json();
+        console.error('Error returning movie:', error);
+      }
+    } catch (error) {
+      console.error('Error returning movie:', error);
+    }
+  };
 
   const fetchRentalHistory = async () => {
     try {
@@ -281,6 +321,7 @@ const Dashboard = ({ isLightTheme, toggleTheme, isLoggedIn, setIsLoggedIn }) => 
                   <TableHead className="text-center">Rented Date</TableHead>
                   <TableHead className="text-center">Return Date</TableHead>
                   <TableHead className="text-center">Status</TableHead>
+                  <TableHead className="text-center">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -309,11 +350,20 @@ const Dashboard = ({ isLightTheme, toggleTheme, isLoggedIn, setIsLoggedIn }) => 
                         {rental.status}
                       </span>
                     </TableCell>
+                    <TableCell>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleReturnMovie(rental.id, rental)}
+                      >
+                        Return Movie
+                      </Button>
+                    </TableCell>
                   </TableRow>
                 ))}
                 {rentalHistory?.rentals.active.length === 0 && (
                   <TableRow>
-                    <TableCell colSpan={6} className="text-center text-muted-foreground">
+                    <TableCell colSpan={7} className="text-center text-muted-foreground">
                       No active rentals
                     </TableCell>
                   </TableRow>
@@ -374,9 +424,10 @@ const Dashboard = ({ isLightTheme, toggleTheme, isLoggedIn, setIsLoggedIn }) => 
         {sessionStorage.getItem('role') === 'admin' && (
           <div className="mt-10">
             <Tabs defaultValue="users" className="w-full">
-              <TabsList className="grid w-full grid-cols-2">
+              <TabsList className="grid w-full grid-cols-3">
                 <TabsTrigger value="users">Manage Users</TabsTrigger>
                 <TabsTrigger value="movies">Manage Movies</TabsTrigger>
+                <TabsTrigger value="rentals">Manage Rentals</TabsTrigger>
               </TabsList>
 
               <TabsContent value="users">
@@ -493,6 +544,59 @@ const Dashboard = ({ isLightTheme, toggleTheme, isLoggedIn, setIsLoggedIn }) => 
                   </CardContent>
                 </Card>
               </TabsContent>
+
+              <TabsContent value="rentals">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>User Rentals Overview</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead className="text-center">Email</TableHead>
+                          <TableHead className="text-center">Movie Title</TableHead>
+                          <TableHead className="text-center">Rental Date</TableHead>
+                          <TableHead className="text-center">Return Date</TableHead>
+                          <TableHead className="text-center">Status</TableHead>
+                          <TableHead className="text-center">Actions</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {fullRentalHistory?.map((rental) => (
+                          <TableRow key={rental._id}>
+                            <TableCell>{rental.user.email}</TableCell>
+                            <TableCell>{rental.movie.title}</TableCell>
+                            <TableCell>{new Date(rental.rentedAt).toLocaleDateString()}</TableCell>
+                            <TableCell>{rental.plannedReturnDate ? new Date(rental.plannedReturnDate).toLocaleDateString() : '-'}</TableCell>
+                            <TableCell>
+                              <span className={`px-2 py-1 rounded-full text-xs ${
+                                !rental.isReturned 
+                                  ? 'bg-green-100 text-green-600' 
+                                  : 'bg-gray-100 text-gray-600'
+                              }`}>
+                                {rental.isReturned ? 'Returned' : 'Active'}
+                              </span>
+                            </TableCell>
+                            <TableCell>
+                              {!rental.isReturned && (
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => handleReturnMovie(rental._id,rental._id )}
+                                >
+                                  Return Movie
+                                </Button>
+                              )}
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
             </Tabs>
 
             {/* User Edit Dialog */}

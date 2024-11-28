@@ -7,7 +7,7 @@ const User = require('../../schema/user');
 
 router.get('/get', async (req, res) => {
     try {
-        const history = await rent_history.find();
+        const history = await RentHistory.find();
         res.json(history);
     } catch (error) {
         res.status(500).json({ message: error.message });
