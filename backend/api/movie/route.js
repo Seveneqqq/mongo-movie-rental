@@ -216,7 +216,6 @@ router.post("/add", async (req, res) => {
 
 router.delete("/delete/:id", async (req, res) => {
     try {
-
         const movie = await Movie.findById(req.params.id);
         if (!movie) {
             return res.status(404).json({
@@ -224,7 +223,7 @@ router.delete("/delete/:id", async (req, res) => {
                 message: "Movie not found"
             });
         }
-
+ 
         if (movie.rentedNow) {
             return res.status(400).json({
                 success: false,
@@ -232,11 +231,14 @@ router.delete("/delete/:id", async (req, res) => {
             });
         }
 
-        await Movie.findByIdAndDelete(req.params.id);
-
+        await Promise.all([
+            Movie.findByIdAndDelete(req.params.id),
+            RentHistory.deleteMany({ movie: req.params.id })
+        ]);
+ 
         res.json({
             success: true,
-            message: "Movie deleted successfully"
+            message: "Movie and its rental history deleted successfully"
         });
     } catch (error) {
         res.status(500).json({
@@ -245,7 +247,7 @@ router.delete("/delete/:id", async (req, res) => {
             error: error.message
         });
     }
-});
+ });
 
 router.put("/edit/:id", async (req, res) => {
     try {
