@@ -30,11 +30,79 @@ import {
 } from "@/components/ui/tabs";
 
 const Dashboard = ({ isLightTheme, toggleTheme, isLoggedIn, setIsLoggedIn }) => {
+
   const [rentalHistory, setRentalHistory] = useState(null);
+  const [fullRentalHistory, setFullRentalHistory] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Admin states
+  const [userSearchTerm, setUserSearchTerm] = useState('');
+  const [movieSearchTerm, setMovieSearchTerm] = useState('');
+  const [rentalSearchTerm, setRentalSearchTerm] = useState('');
+  const [activeRentalSearchTerm, setActiveRentalSearchTerm] = useState('');
+  const [historicalRentalSearchTerm, setHistoricalRentalSearchTerm] = useState('');
+
+  const [userSortConfig, setUserSortConfig] = useState({ key: '', direction: '' });
+  const [movieSortConfig, setMovieSortConfig] = useState({ key: '', direction: '' });
+  const [rentalSortConfig, setRentalSortConfig] = useState({ key: 'rentedAt', direction: 'desc' });
+  const [activeRentalSortConfig, setActiveRentalSortConfig] = useState({ key: '', direction: '' });
+  const [historicalRentalSortConfig, setHistoricalRentalSortConfig] = useState({ key: '', direction: '' });
+
+  const filterUsers = (users) => {
+    return users.filter(user =>
+      user.firstName.toLowerCase().includes(userSearchTerm.toLowerCase()) ||
+      user.lastName.toLowerCase().includes(userSearchTerm.toLowerCase()) ||
+      user.email.toLowerCase().includes(userSearchTerm.toLowerCase()) ||
+      user.phoneNumber.includes(userSearchTerm)
+    );
+  };
+
+  const filterMovies = (movies) => {
+    return movies.filter(movie =>
+      movie.title.toLowerCase().includes(movieSearchTerm.toLowerCase()) ||
+      movie.genre.toLowerCase().includes(movieSearchTerm.toLowerCase()) ||
+      movie.director.toLowerCase().includes(movieSearchTerm.toLowerCase())
+    );
+  };
+
+  const filterRentals = (rentals) => {
+    return rentals?.filter(rental =>
+      rental.user.email.toLowerCase().includes(rentalSearchTerm.toLowerCase()) ||
+      rental.movie.title.toLowerCase().includes(rentalSearchTerm.toLowerCase()) ||
+      rental._id.includes(rentalSearchTerm) ||
+      new Date(rental.rentedAt).toLocaleDateString().includes(rentalSearchTerm)
+    );
+  };
+
+  const filterActiveRentals = (rentals) => {
+    return rentals?.filter(rental =>
+      rental.movieTitle.toLowerCase().includes(activeRentalSearchTerm.toLowerCase()) ||
+      rental.movieGenre.toLowerCase().includes(activeRentalSearchTerm.toLowerCase()) ||
+      new Date(rental.rentedAt).toLocaleDateString().includes(activeRentalSearchTerm)
+    );
+  };
+
+  const filterHistoricalRentals = (rentals) => {
+    return rentals?.filter(rental =>
+      rental.movieTitle.toLowerCase().includes(historicalRentalSearchTerm.toLowerCase()) ||
+      rental.movieGenre.toLowerCase().includes(historicalRentalSearchTerm.toLowerCase()) ||
+      new Date(rental.rentedAt).toLocaleDateString().includes(historicalRentalSearchTerm)
+    );
+  };
+
+  const sortData = (data, sortConfig) => {
+    if (!sortConfig.key) return data;
+
+    return [...data].sort((a, b) => {
+      let aVal = sortConfig.key.split('.').reduce((obj, key) => obj[key], a);
+      let bVal = sortConfig.key.split('.').reduce((obj, key) => obj[key], b);
+
+      if (aVal < bVal) return sortConfig.direction === 'asc' ? -1 : 1;
+      if (aVal > bVal) return sortConfig.direction === 'asc' ? 1 : -1;
+      return 0;
+    });
+  };
+
   const [users, setUsers] = useState([]);
   const [allMovies, setAllMovies] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
@@ -58,8 +126,47 @@ const Dashboard = ({ isLightTheme, toggleTheme, isLoggedIn, setIsLoggedIn }) => 
     if (sessionStorage.getItem('role') === 'admin') {
       fetchUsers();
       fetchAllMovies();
+      fetchAllRentals();
     }
   }, []);
+
+  const fetchAllRentals = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/api/movie/get-full-history');
+      if (!response.ok) {
+        throw new Error('Failed to fetch rental history');
+      }
+      const data = await response.json();
+      setFullRentalHistory(data.rentals);
+    } catch (error) {
+      console.error('Error fetching rental history:', error);
+    }
+  };
+
+  const handleReturnMovie = async (rentalId, movieId) => {
+    console.log(rentalId)
+    console.log(movieId)
+    console.log(movieId.id)
+    try {
+      const response = await fetch(`http://localhost:5000/api/movie/return`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ movieId })
+      });
+
+      if (response.ok) {
+        await fetchRentalHistory();
+
+      } else {
+        const error = await response.json();
+        console.error('Error returning movie:', error);
+      }
+    } catch (error) {
+      console.error('Error returning movie:', error);
+    }
+  };
 
   const fetchRentalHistory = async () => {
     try {
@@ -125,7 +232,7 @@ const Dashboard = ({ isLightTheme, toggleTheme, isLoggedIn, setIsLoggedIn }) => 
         },
         body: JSON.stringify({
           ...newMovieData,
-          actors: newMovieData.actors.split(',').map(actor => actor.trim()) // Convert string to array
+          actors: newMovieData.actors.split(',').map(actor => actor.trim())
         })
       });
 
@@ -152,7 +259,7 @@ const Dashboard = ({ isLightTheme, toggleTheme, isLoggedIn, setIsLoggedIn }) => 
     try {
       const movieToUpdate = {
         ...editedMovieData,
-        actors: typeof editedMovieData.actors === 'string' 
+        actors: typeof editedMovieData.actors === 'string'
           ? editedMovieData.actors.split(',').map(actor => actor.trim())
           : editedMovieData.actors
       };
@@ -222,7 +329,7 @@ const Dashboard = ({ isLightTheme, toggleTheme, isLoggedIn, setIsLoggedIn }) => 
         isLoggedIn={isLoggedIn}
         setIsLoggedIn={setIsLoggedIn}
       />
-      
+
       <div className="container mx-auto px-4 py-6 md:py-10">
         {/* User section */}
         <div className="mb-8">
@@ -281,6 +388,7 @@ const Dashboard = ({ isLightTheme, toggleTheme, isLoggedIn, setIsLoggedIn }) => 
                   <TableHead className="text-center">Rented Date</TableHead>
                   <TableHead className="text-center">Return Date</TableHead>
                   <TableHead className="text-center">Status</TableHead>
+                  <TableHead className="text-center">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -301,19 +409,27 @@ const Dashboard = ({ isLightTheme, toggleTheme, isLoggedIn, setIsLoggedIn }) => 
                     <TableCell>{new Date(rental.rentedAt).toLocaleDateString()}</TableCell>
                     <TableCell>{new Date(rental.plannedReturnDate).toLocaleDateString()}</TableCell>
                     <TableCell>
-                      <span className={`px-2 py-1 rounded-full text-xs ${
-                        rental.status === 'Active' 
-                          ? 'bg-green-100 text-green-600' 
+                      <span className={`px-2 py-1 rounded-full text-xs ${rental.status === 'Active'
+                          ? 'bg-green-100 text-green-600'
                           : 'bg-red-100 text-red-600'
-                      }`}>
+                        }`}>
                         {rental.status}
                       </span>
+                    </TableCell>
+                    <TableCell>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleReturnMovie(rental.id, rental)}
+                      >
+                        Return Movie
+                      </Button>
                     </TableCell>
                   </TableRow>
                 ))}
                 {rentalHistory?.rentals.active.length === 0 && (
                   <TableRow>
-                    <TableCell colSpan={6} className="text-center text-muted-foreground">
+                    <TableCell colSpan={7} className="text-center text-muted-foreground">
                       No active rentals
                     </TableCell>
                   </TableRow>
@@ -374,29 +490,52 @@ const Dashboard = ({ isLightTheme, toggleTheme, isLoggedIn, setIsLoggedIn }) => 
         {sessionStorage.getItem('role') === 'admin' && (
           <div className="mt-10">
             <Tabs defaultValue="users" className="w-full">
-              <TabsList className="grid w-full grid-cols-2">
+              <TabsList className="grid w-full grid-cols-3">
                 <TabsTrigger value="users">Manage Users</TabsTrigger>
                 <TabsTrigger value="movies">Manage Movies</TabsTrigger>
+                <TabsTrigger value="rentals">Manage Rentals</TabsTrigger>
               </TabsList>
 
               <TabsContent value="users">
                 <Card>
                   <CardHeader>
                     <CardTitle>Users Management</CardTitle>
+                    <Input
+                      placeholder="Search users..."
+                      value={userSearchTerm}
+                      onChange={(e) => setUserSearchTerm(e.target.value)}
+                      className="max-w-sm mt-2"
+                    />
                   </CardHeader>
                   <CardContent>
                     <Table>
                       <TableHeader>
                         <TableRow>
-                          <TableHead className="text-center">Name</TableHead>
-                          <TableHead className="text-center">Email</TableHead>
+                          <TableHead
+                            className="text-center cursor-pointer"
+                            onClick={() => setUserSortConfig({
+                              key: 'firstName',
+                              direction: userSortConfig.key === 'firstName' && userSortConfig.direction === 'asc' ? 'desc' : 'asc'
+                            })}
+                          >
+                            Name {userSortConfig.key === 'firstName' && (userSortConfig.direction === 'asc' ? '↑' : '↓')}
+                          </TableHead>
+                          <TableHead
+                            className="text-center cursor-pointer"
+                            onClick={() => setUserSortConfig({
+                              key: 'email',
+                              direction: userSortConfig.key === 'email' && userSortConfig.direction === 'asc' ? 'desc' : 'asc'
+                            })}
+                          >
+                            Email {userSortConfig.key === 'email' && (userSortConfig.direction === 'asc' ? '↑' : '↓')}
+                          </TableHead>
                           <TableHead className="text-center">Phone</TableHead>
                           <TableHead className="text-center">Role</TableHead>
                           <TableHead className="text-center">Actions</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
-                        {users.map((user) => (
+                        {sortData(filterUsers(users), userSortConfig).map((user) => (
                           <TableRow key={user._id}>
                             <TableCell>{user.firstName} {user.lastName}</TableCell>
                             <TableCell>{user.email}</TableCell>
@@ -404,8 +543,8 @@ const Dashboard = ({ isLightTheme, toggleTheme, isLoggedIn, setIsLoggedIn }) => 
                             <TableCell>{user.role}</TableCell>
                             <TableCell>
                               <div className="flex gap-2">
-                                <Button 
-                                  variant="outline" 
+                                <Button
+                                  variant="outline"
                                   size="sm"
                                   onClick={() => {
                                     setSelectedUser(user);
@@ -414,8 +553,8 @@ const Dashboard = ({ isLightTheme, toggleTheme, isLoggedIn, setIsLoggedIn }) => 
                                 >
                                   Edit
                                 </Button>
-                                <Button 
-                                  variant="destructive" 
+                                <Button
+                                  variant="destructive"
                                   size="sm"
                                   onClick={() => handleUserDelete(user._id)}
                                 >
@@ -437,20 +576,50 @@ const Dashboard = ({ isLightTheme, toggleTheme, isLoggedIn, setIsLoggedIn }) => 
                       <CardTitle>Movies Management</CardTitle>
                       <Button onClick={() => setShowAddMovie(true)}>Add New Movie</Button>
                     </div>
+                    <Input
+                      placeholder="Search movies..."
+                      value={movieSearchTerm}
+                      onChange={(e) => setMovieSearchTerm(e.target.value)}
+                      className="max-w-sm mt-2"
+                    />
                   </CardHeader>
                   <CardContent>
                     <Table>
                       <TableHeader>
                         <TableRow>
                           <TableHead className="text-center">Image</TableHead>
-                          <TableHead className="text-center">Title</TableHead>
-                          <TableHead className="text-center">Genre</TableHead>
-                          <TableHead className="text-center">Director</TableHead>
+                          <TableHead
+                            className="text-center cursor-pointer"
+                            onClick={() => setMovieSortConfig({
+                              key: 'title',
+                              direction: movieSortConfig.key === 'title' && movieSortConfig.direction === 'asc' ? 'desc' : 'asc'
+                            })}
+                          >
+                            Title {movieSortConfig.key === 'title' && (movieSortConfig.direction === 'asc' ? '↑' : '↓')}
+                          </TableHead>
+                          <TableHead
+                            className="text-center cursor-pointer"
+                            onClick={() => setMovieSortConfig({
+                              key: 'genre',
+                              direction: movieSortConfig.key === 'genre' && movieSortConfig.direction === 'asc' ? 'desc' : 'asc'
+                            })}
+                          >
+                            Genre {movieSortConfig.key === 'genre' && (movieSortConfig.direction === 'asc' ? '↑' : '↓')}
+                          </TableHead>
+                          <TableHead
+                            className="text-center cursor-pointer"
+                            onClick={() => setMovieSortConfig({
+                              key: 'director',
+                              direction: movieSortConfig.key === 'director' && movieSortConfig.direction === 'asc' ? 'desc' : 'asc'
+                            })}
+                          >
+                            Director {movieSortConfig.key === 'director' && (movieSortConfig.direction === 'asc' ? '↑' : '↓')}
+                          </TableHead>
                           <TableHead className="text-center">Actions</TableHead>
                         </TableRow>
                       </TableHeader>
                       <TableBody>
-                        {allMovies.map((movie) => (
+                        {sortData(filterMovies(allMovies), movieSortConfig).map((movie) => (
                           <TableRow key={movie._id}>
                             <TableCell>
                               <img
@@ -467,8 +636,8 @@ const Dashboard = ({ isLightTheme, toggleTheme, isLoggedIn, setIsLoggedIn }) => 
                             <TableCell>{movie.director}</TableCell>
                             <TableCell>
                               <div className="flex gap-2">
-                                <Button 
-                                  variant="outline" 
+                                <Button
+                                  variant="outline"
                                   size="sm"
                                   onClick={() => {
                                     setSelectedMovieToEdit(movie);
@@ -477,8 +646,8 @@ const Dashboard = ({ isLightTheme, toggleTheme, isLoggedIn, setIsLoggedIn }) => 
                                 >
                                   Edit
                                 </Button>
-                                <Button 
-                                  variant="destructive" 
+                                <Button
+                                  variant="destructive"
                                   size="sm"
                                   onClick={() => handleMovieDelete(movie._id)}
                                 >
@@ -493,6 +662,88 @@ const Dashboard = ({ isLightTheme, toggleTheme, isLoggedIn, setIsLoggedIn }) => 
                   </CardContent>
                 </Card>
               </TabsContent>
+
+              <TabsContent value="rentals">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>User Rentals Overview</CardTitle>
+                    <Input
+                      placeholder="Search rentals..."
+                      value={rentalSearchTerm}
+                      onChange={(e) => setRentalSearchTerm(e.target.value)}
+                      className="max-w-sm mt-2"
+                    />
+                  </CardHeader>
+                  <CardContent>
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead
+                            className="text-center cursor-pointer"
+                            onClick={() => setRentalSortConfig({
+                              key: 'user.email',
+                              direction: rentalSortConfig.key === 'user.email' && rentalSortConfig.direction === 'asc' ? 'desc' : 'asc'
+                            })}
+                          >
+                            Email {rentalSortConfig.key === 'user.email' && (rentalSortConfig.direction === 'asc' ? '↑' : '↓')}
+                          </TableHead>
+                          <TableHead
+                            className="text-center cursor-pointer"
+                            onClick={() => setRentalSortConfig({
+                              key: 'movie.title',
+                              direction: rentalSortConfig.key === 'movie.title' && rentalSortConfig.direction === 'asc' ? 'desc' : 'asc'
+                            })}
+                          >
+                            Movie Title {rentalSortConfig.key === 'movie.title' && (rentalSortConfig.direction === 'asc' ? '↑' : '↓')}
+                          </TableHead>
+                          <TableHead
+                            className="text-center cursor-pointer"
+                            onClick={() => setRentalSortConfig({
+                              key: 'rentedAt',
+                              direction: rentalSortConfig.key === 'rentedAt' && rentalSortConfig.direction === 'asc' ? 'desc' : 'asc'
+                            })}
+                          >
+                            Rental Date {rentalSortConfig.key === 'rentedAt' && (rentalSortConfig.direction === 'asc' ? '↑' : '↓')}
+                          </TableHead>
+                          <TableHead className="text-center">Return Date</TableHead>
+                          <TableHead className="text-center">Status</TableHead>
+                          <TableHead className="text-center">Actions</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {sortData(filterRentals(fullRentalHistory), rentalSortConfig).map((rental) => (
+                          <TableRow key={rental._id}>
+                            <TableCell>{rental.user.email}</TableCell>
+                            <TableCell>{rental.movie.title}</TableCell>
+                            <TableCell>{new Date(rental.rentedAt).toLocaleDateString()}</TableCell>
+                            <TableCell>{rental.plannedReturnDate ? new Date(rental.plannedReturnDate).toLocaleDateString() : '-'}</TableCell>
+                            <TableCell>
+                              <span className={`px-2 py-1 rounded-full text-xs ${!rental.isReturned
+                                  ? 'bg-green-100 text-green-600'
+                                  : 'bg-gray-100 text-gray-600'
+                                }`}>
+                                {rental.isReturned ? 'Returned' : 'Active'}
+                              </span>
+                            </TableCell>
+                            <TableCell>
+                              {!rental.isReturned && (
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => handleReturnMovie(rental._id, rental._id)}
+                                >
+                                  Return Movie
+                                </Button>
+                              )}
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
             </Tabs>
 
             {/* User Edit Dialog */}

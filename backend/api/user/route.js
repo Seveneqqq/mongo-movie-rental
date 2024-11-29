@@ -4,17 +4,15 @@ const User = require('../../schema/user');
 const RentHistory = require('../../schema/rent_history');
 const bcrypt = require('bcrypt');
 
-// Pobierz wszystkich użytkowników
 router.get('/get', async (req, res) => {
     try {
-        const users = await User.find().select('-password'); // Nie zwracaj hasła
+        const users = await User.find().select('-password'); 
         res.json(users);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 });
 
-// Rejestracja
 router.post('/register', async (req, res) => {
     try {
         const allowedRoles = ['user', 'admin'];
@@ -68,7 +66,6 @@ router.post('/register', async (req, res) => {
     }
 });
 
-// Logowanie
 router.post('/login', async (req, res) => {
     try {
         if (!req.body.email || !req.body.password) {
@@ -110,7 +107,6 @@ router.post('/login', async (req, res) => {
     }
 });
 
-// Usuwanie użytkownika
 router.delete('/delete/:id', async (req, res) => {
     try {
         const user = await User.findById(req.params.id);
@@ -122,7 +118,6 @@ router.delete('/delete/:id', async (req, res) => {
             });
         }
 
-        // Najpierw sprawdź czy użytkownik ma aktywne wypożyczenia
         const activeRentals = await RentHistory.find({
             user: req.params.id,
             isReturned: false
@@ -149,22 +144,18 @@ router.delete('/delete/:id', async (req, res) => {
     }
 });
 
-// Edycja użytkownika
 router.put('/edit/:id', async (req, res) => {
     try {
         const updates = { ...req.body };
         
-        // Jeśli jest nowe hasło, zahaszuj je
         if (updates.password && updates.password.trim() !== '') {
             updates.password = await bcrypt.hash(updates.password, 10);
         } else {
-            // Jeśli nie ma nowego hasła, nie aktualizuj go
             delete updates.password;
         }
-        
-        // Usuń pola, których nie chcemy aktualizować
+
         delete updates._id;
-        delete updates.role; // Nie pozwalamy na zmianę roli w tym endpoincie
+        delete updates.role; 
 
         const user = await User.findByIdAndUpdate(
             req.params.id,
@@ -172,7 +163,7 @@ router.put('/edit/:id', async (req, res) => {
             { 
                 new: true, 
                 runValidators: true,
-                select: '-password' // Nie zwracaj hasła w odpowiedzi
+                select: '-password' 
             }
         );
         
@@ -198,26 +189,41 @@ router.put('/edit/:id', async (req, res) => {
     }
 });
 
-// Opcjonalnie: Pobranie pojedynczego użytkownika
-router.get('/get/:id', async (req, res) => {
+router.delete('/delete/:id', async (req, res) => {
     try {
-        const user = await User.findById(req.params.id).select('-password');
-        if (!user) {
-            return res.status(404).json({ 
+        const movie = await Movie.findById(req.params.id);
+        
+        if (!movie) {
+            return res.status(404).json({
                 success: false,
-                message: 'User not found' 
+                message: 'Movie not found'
             });
         }
+ 
+        const activeRentals = await RentHistory.find({
+            movie: req.params.id,
+            isReturned: false
+        });
+ 
+        if (activeRentals.length > 0) {
+            return res.status(400).json({
+                success: false, 
+                message: 'Cannot delete movie that is currently rented'
+            });
+        }
+ 
+        await Movie.findByIdAndDelete(req.params.id);
+ 
         res.json({
             success: true,
-            user: user
+            message: 'Movie deleted successfully'
         });
     } catch (error) {
-        res.status(500).json({ 
+        res.status(500).json({
             success: false,
-            message: error.message 
+            message: error.message
         });
     }
-});
+ });
 
 module.exports = router;

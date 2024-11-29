@@ -1,9 +1,9 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const Movie = require('../../schema/movie');
-const User = require('../../schema/user');
-const RentHistory = require('../../schema/rent_history');
-router.get('/get', async (req, res) => {
+const Movie = require("../../schema/movie");
+const User = require("../../schema/user");
+const RentHistory = require("../../schema/rent_history");
+router.get("/get", async (req, res) => {
     try {
         const movies = await Movie.find();
         res.json(movies);
@@ -11,10 +11,39 @@ router.get('/get', async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 });
-const RENT_LIMIT = 2; 
-const RENT_DURATION_DAYS = 2; 
+const RENT_LIMIT = 2;
+const RENT_DURATION_DAYS = 2;
 
-router.post('/rent', async (req, res) => {
+router.get("/get-full-history", async (req, res) => {
+    try {
+        const rentals = await RentHistory.find()
+            .populate("user", "firstName lastName email")
+            .populate("movie", "title genre image")
+            .sort({ rentedAt: -1 });
+
+        if (!rentals) {
+            return res.status(404).json({
+                success: false,
+                message: "No rental history found",
+            });
+        }
+
+        res.json({
+            success: true,
+            rentals: rentals,
+        });
+    } catch (error) {
+        console.log(error);
+        console.error("Error fetching full rental history:", error);
+        res.status(500).json({
+            success: false,
+            message: "Error fetching rental history",
+            error: error.message,
+        });
+    }
+});
+
+router.post("/rent", async (req, res) => {
     try {
         const { movieId, userId } = req.body;
 
@@ -22,7 +51,7 @@ router.post('/rent', async (req, res) => {
         if (!movie) {
             return res.status(404).json({
                 success: false,
-                message: 'Movie not found'
+                message: "Movie not found",
             });
         }
 
@@ -30,26 +59,26 @@ router.post('/rent', async (req, res) => {
         if (!user) {
             return res.status(404).json({
                 success: false,
-                message: 'User not found'
+                message: "User not found",
             });
         }
 
         if (movie.rentedNow) {
             return res.status(400).json({
                 success: false,
-                message: 'Movie is currently rented'
+                message: "Movie is currently rented",
             });
         }
 
         const activeRentals = await RentHistory.countDocuments({
             user: userId,
-            isReturned: false
+            isReturned: false,
         });
 
         if (activeRentals >= RENT_LIMIT) {
             return res.status(400).json({
                 success: false,
-                message: `User has reached the maximum rental limit of ${RENT_LIMIT} movies`
+                message: `User has reached the maximum rental limit of ${RENT_LIMIT} movies`,
             });
         }
 
@@ -62,42 +91,89 @@ router.post('/rent', async (req, res) => {
             movie: movieId,
             rentedAt: rentedAt,
             plannedReturnDate: plannedReturnDate,
-            isReturned: false
+            isReturned: false,
         });
 
         movie.rentedNow = true;
 
-        await Promise.all([
-            rentHistory.save(),
-            movie.save()
-        ]);
+        await Promise.all([rentHistory.save(), movie.save()]);
 
         const populatedRentHistory = await RentHistory.findById(rentHistory._id)
-            .populate('user', 'firstName lastName email')
-            .populate('movie', 'title');
+            .populate("user", "firstName lastName email")
+            .populate("movie", "title");
 
         res.status(200).json({
             success: true,
-            message: 'Movie rented successfully',
+            message: "Movie rented successfully",
             rentDetails: {
                 movie: populatedRentHistory.movie,
                 user: populatedRentHistory.user,
                 rentedAt: populatedRentHistory.rentedAt,
-                plannedReturnDate: populatedRentHistory.plannedReturnDate
-            }
+                plannedReturnDate: populatedRentHistory.plannedReturnDate,
+            },
         });
-
     } catch (error) {
-        console.error('Rent error:', error);
+        console.error("Rent error:", error);
         res.status(500).json({
             success: false,
-            message: 'Error while renting movie',
-            error: error.message
+            message: "Error while renting movie",
+            error: error.message,
         });
     }
 });
 
-router.post('/add', async (req, res) => {
+router.put("/return", async (req, res) => {
+    try {
+        const { movieId } = req.body;
+
+        const rentId = movieId.id || movieId;
+        console.log(movieId);
+
+        const rental = await RentHistory.findByIdAndUpdate(
+            rentId,
+            {
+                isReturned: true,
+                actualReturnDate: new Date(),
+            },
+            { new: true }
+        ).populate("movie");
+
+        if (!rental) {
+            return res.status(404).json({
+                success: false,
+                message: "Rental record not found",
+            });
+        }
+
+        const movie = await Movie.findByIdAndUpdate(
+            rental.movie._id,
+            { rentedNow: false },
+            { new: true }
+        );
+
+        if (!movie) {
+            return res.status(404).json({
+                success: false,
+                message: "Movie not found",
+            });
+        }
+
+        res.json({
+            success: true,
+            message: "Movie returned successfully",
+            rental: rental,
+        });
+    } catch (error) {
+        console.error("Error returning movie:", error);
+        res.status(500).json({
+            success: false,
+            message: "Error returning movie",
+            error: error.message,
+        });
+    }
+});
+
+router.post("/add", async (req, res) => {
     try {
         const movie = new Movie({
             title: req.body.title,
@@ -107,61 +183,73 @@ router.post('/add', async (req, res) => {
             rating: req.body.rating,
             description: req.body.description,
             actors: req.body.actors,
-            image: req.body.image || 'default-movie.jpg',
-            rentedNow: false
+            image: req.body.image || "default-movie.jpg",
+            rentedNow: false,
         });
 
         const newMovie = await movie.save();
         res.status(201).json({
-            message: 'Movie added successfully',
-            movie: newMovie
+            message: "Movie added successfully",
+            movie: newMovie,
         });
     } catch (error) {
-
         if (error.code === 11000) {
             return res.status(400).json({
-                message: 'Movie with this title already exists',
-                error: error.message
+                message: "Movie with this title already exists",
+                error: error.message,
             });
         }
 
-        if (error.name === 'ValidationError') {
+        if (error.name === "ValidationError") {
             return res.status(400).json({
-                message: 'Validation Error',
-                errors: Object.values(error.errors).map(err => err.message)
+                message: "Validation Error",
+                errors: Object.values(error.errors).map((err) => err.message),
             });
         }
 
         res.status(500).json({
-            message: 'Error adding movie',
-            error: error.message
+            message: "Error adding movie",
+            error: error.message,
         });
     }
 });
 
-router.delete('/delete/:id', async (req, res) => {
+router.delete("/delete/:id", async (req, res) => {
     try {
-        const movie = await Movie.findByIdAndDelete(req.params.id);
+        const movie = await Movie.findById(req.params.id);
         if (!movie) {
             return res.status(404).json({
                 success: false,
-                message: 'Movie not found'
+                message: "Movie not found"
             });
         }
+ 
+        if (movie.rentedNow) {
+            return res.status(400).json({
+                success: false,
+                message: "Cannot delete movie while it is rented"
+            });
+        }
+
+        await Promise.all([
+            Movie.findByIdAndDelete(req.params.id),
+            RentHistory.deleteMany({ movie: req.params.id })
+        ]);
+ 
         res.json({
             success: true,
-            message: 'Movie deleted successfully'
+            message: "Movie and its rental history deleted successfully"
         });
     } catch (error) {
         res.status(500).json({
             success: false,
-            message: 'Error deleting movie',
+            message: "Error deleting movie",
             error: error.message
         });
     }
-});
+ });
 
-router.put('/edit/:id', async(req, res) => {
+router.put("/edit/:id", async (req, res) => {
     try {
         const movie = await Movie.findByIdAndUpdate(
             req.params.id,
@@ -173,7 +261,7 @@ router.put('/edit/:id', async(req, res) => {
                 rating: req.body.rating,
                 description: req.body.description,
                 actors: req.body.actors,
-                image: req.body.image
+                image: req.body.image,
             },
             { new: true, runValidators: true }
         );
@@ -181,20 +269,20 @@ router.put('/edit/:id', async(req, res) => {
         if (!movie) {
             return res.status(404).json({
                 success: false,
-                message: 'Movie not found'
+                message: "Movie not found",
             });
         }
 
         res.json({
             success: true,
-            message: 'Movie updated successfully',
-            movie: movie
+            message: "Movie updated successfully",
+            movie: movie,
         });
     } catch (error) {
         res.status(500).json({
             success: false,
-            message: 'Error updating movie',
-            error: error.message
+            message: "Error updating movie",
+            error: error.message,
         });
     }
 });

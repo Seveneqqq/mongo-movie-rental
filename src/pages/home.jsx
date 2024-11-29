@@ -30,7 +30,6 @@ const Home = ({ isLightTheme, toggleTheme, isLoggedIn, setIsLoggedIn }) => {
   const [error, setError] = useState(null);
   const [selectedMovie, setSelectedMovie] = useState(null);
   
-  // Search and filter states
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedGenre, setSelectedGenre] = useState('all');
   const [sortOrder, setSortOrder] = useState('titleAsc');
@@ -40,23 +39,23 @@ const Home = ({ isLightTheme, toggleTheme, isLoggedIn, setIsLoggedIn }) => {
     fetchMovies();
   }, []);
 
-  // Apply filters and sorting
+
   useEffect(() => {
     let filtered = [...movies];
     
-    // Apply search filter
+
     if (searchQuery) {
       filtered = filtered.filter(movie =>
         movie.title.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
     
-    // Apply genre filter
+ 
     if (selectedGenre !== 'all') {
       filtered = filtered.filter(movie => movie.genre === selectedGenre);
     }
     
-    // Apply sorting
+  
     filtered.sort((a, b) => {
       switch (sortOrder) {
         case 'titleAsc':
@@ -135,7 +134,6 @@ const Home = ({ isLightTheme, toggleTheme, isLoggedIn, setIsLoggedIn }) => {
     }
   };
 
-  // Get unique genres from movies
   const uniqueGenres = [...new Set(movies.map(movie => movie.genre))];
 
   if (loading) {
@@ -158,7 +156,6 @@ const Home = ({ isLightTheme, toggleTheme, isLoggedIn, setIsLoggedIn }) => {
       <div className="container mx-auto px-4 py-6 md:py-10">
         <h1 className="text-2xl md:text-3xl font-bold mb-6 md:mb-8 text-center">Available Movies</h1>
         
-        {/* Search and Filter Section */}
         <div className="mb-6 space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <Input
@@ -228,7 +225,7 @@ const Home = ({ isLightTheme, toggleTheme, isLoggedIn, setIsLoggedIn }) => {
               <div className="p-4 flex flex-col flex-grow">
                 <h2 className="text-lg md:text-xl font-semibold line-clamp-1 mb-1">{movie.title}</h2>
                 <p className="text-sm text-muted-foreground mb-2">
-                  {movie.genre} • {movie.duration} min
+                  {movie.genre} • {movie.duration} min 
                 </p>
                 <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
                   {movie.description}
@@ -281,7 +278,7 @@ const Home = ({ isLightTheme, toggleTheme, isLoggedIn, setIsLoggedIn }) => {
                   {selectedMovie.title}
                 </DialogTitle>
                 <DialogDescription className="text-base md:text-lg text-muted-foreground">
-                  {selectedMovie.genre} • {selectedMovie.duration} minutes
+                  {selectedMovie.genre} • {selectedMovie.duration} minutes • Added : {selectedMovie.addedDate}
                 </DialogDescription>
               </DialogHeader>
               
