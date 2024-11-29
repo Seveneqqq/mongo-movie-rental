@@ -17,9 +17,9 @@ const RENT_DURATION_DAYS = 2;
 router.get('/get-full-history', async (req, res) => {
     try {
         const rentals = await RentHistory.find()
-            .populate('user', 'firstName lastName email') // Pobierz wybrane pola z modelu User
-            .populate('movie', 'title genre image') // Pobierz wybrane pola z modelu Movie
-            .sort({ rentedAt: -1 }); // Sortuj od najnowszych
+            .populate('user', 'firstName lastName email') 
+            .populate('movie', 'title genre image')
+            .sort({ rentedAt: -1 }); 
 
         if (!rentals) {
             return res.status(404).json({
@@ -133,7 +133,7 @@ router.put('/return', async (req, res) => {
 
         const rentId = movieId.id || movieId; 
         console.log(movieId);
-        // Find and update rental record first
+
         const rental = await RentHistory.findByIdAndUpdate(
             rentId,
             {
@@ -150,7 +150,6 @@ router.put('/return', async (req, res) => {
             });
         }
 
-        // Update movie status using the movie ID from the rental record
         const movie = await Movie.findByIdAndUpdate(
             rental.movie._id,
             { rentedNow: false },
