@@ -1,0 +1,230 @@
+[{
+  "_id": {
+    "$oid": "6741bc81b4a97457e2647a9a"
+  },
+  "title": "Gladiator",
+  "genre": "Action/Drama",
+  "director": "Ridley Scott",
+  "duration": 155,
+  "rating": 8.5,
+  "description": "A former Roman General sets out to exact vengeance against the corrupt emperor who murdered his family and sent him into slavery.",
+  "actors": [
+    "Russell Crowe",
+    "Joaquin Phoenix",
+    "Connie Nielsen",
+    "Oliver Reed"
+  ],
+  "image": "gladiator.jpg",
+  "rentedNow": false,
+  "addedDate": {
+    "$date": "2024-11-23T11:29:05.822Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6741bc92b4a97457e2647a9c"
+  },
+  "title": "Harry Potter and the Chamber of Secrets",
+  "genre": "Fantasy/Adventure",
+  "director": "Chris Columbus",
+  "duration": 161,
+  "rating": 7.4,
+  "description": "An ancient prophecy seems to be coming true when a mysterious presence begins stalking the corridors of a school of magic and leaving its victims paralyzed.",
+  "actors": [
+    "Daniel Radcliffe",
+    "Rupert Grint",
+    "Emma Watson",
+    "Richard Harris"
+  ],
+  "image": "harry-potter-2.jpg",
+  "rentedNow": false,
+  "addedDate": {
+    "$date": "2024-11-23T11:29:22.599Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6741bc98b4a97457e2647a9e"
+  },
+  "title": "The Fast and the Furious: Tokyo Drift",
+  "genre": "Action/Crime",
+  "director": "Justin Lin",
+  "duration": 104,
+  "rating": 6,
+  "description": "A teenager becomes a major competitor in the world of drift racing after moving in with his father in Tokyo to avoid a jail sentence in America.",
+  "actors": [
+    "Lucas Black",
+    "Sung Kang",
+    "Bow Wow",
+    "Brian Tee"
+  ],
+  "image": "tokyo-drift.jpg",
+  "rentedNow": false,
+  "addedDate": {
+    "$date": "2024-11-23T11:29:28.075Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6741bca5b4a97457e2647aa0"
+  },
+  "title": "Harry Potter and the Order of the Phoenix",
+  "genre": "Fantasy/Adventure",
+  "director": "David Yates",
+  "duration": 138,
+  "rating": 7.5,
+  "description": "With their warning about Lord Voldemort's return scoffed at, Harry and Dumbledore are targeted by the Wizard authorities as an authoritarian bureaucrat slowly seizes power at Hogwarts.",
+  "actors": [
+    "Daniel Radcliffe",
+    "Emma Watson",
+    "Rupert Grint",
+    "Michael Gambon"
+  ],
+  "image": "harry-potter-5.jpg",
+  "rentedNow": false,
+  "addedDate": {
+    "$date": "2024-11-23T11:29:41.077Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6741bcaab4a97457e2647aa2"
+  },
+  "title": "The Lord of the Rings: The Two Towers",
+  "genre": "Fantasy/Adventure",
+  "director": "Peter Jackson",
+  "duration": 179,
+  "rating": 8.8,
+  "description": "While Frodo and Sam edge closer to Mordor with the help of the shifty Gollum, the divided fellowship makes a stand against Sauron's new ally, Saruman, and his hordes of Isengard.",
+  "actors": [
+    "Elijah Wood",
+    "Viggo Mortensen",
+    "Ian McKellen",
+    "Orlando Bloom"
+  ],
+  "image": "lotr-two-towers.jpg",
+  "rentedNow": false,
+  "addedDate": {
+    "$date": "2024-11-23T11:29:46.793Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6749c290496160a73dcaf3e9"
+  },
+  "title": "Harry Potter i Insygnia Śmierci",
+  "genre": "Fantasy",
+  "director": "David Yates",
+  "duration": 146,
+  "rating": 8.1,
+  "description": "W ostatniej części serii Harry, Ron i Hermiona wyruszają w niebezpieczną misję zniszczenia horkruksów - źródeł nieśmiertelności Voldemorta.",
+  "actors": [
+    "Daniel Radcliffe",
+    "Emma Watson",
+    "Rupert Grint",
+    "Ralph Fiennes"
+  ],
+  "image": "harry-potter-dh.jpg",
+  "rentedNow": false,
+  "addedDate": {
+    "$date": "2024-11-29T13:33:04.524Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6749c294496160a73dcaf3eb"
+  },
+  "title": "Harry Potter i Kamień Filozoficzny",
+  "genre": "Fantasy",
+  "director": "Chris Columbus",
+  "duration": 152,
+  "rating": 7.6,
+  "description": "Młody czarodziej Harry Potter odkrywa swoje dziedzictwo i rozpoczyna naukę w Szkole Magii i Czarodziejstwa Hogwart.",
+  "actors": [
+    "Daniel Radcliffe",
+    "Emma Watson",
+    "Rupert Grint",
+    "Richard Harris"
+  ],
+  "image": "harry-potter-ps.jpg",
+  "rentedNow": false,
+  "addedDate": {
+    "$date": "2024-11-29T13:33:08.236Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6749c298496160a73dcaf3ed"
+  },
+  "title": "Władca Pierścieni: Powrót Króla",
+  "genre": "Fantasy",
+  "director": "Peter Jackson",
+  "duration": 201,
+  "rating": 9,
+  "description": "Ostatnia część trylogii, w której Frodo i Sam zmierzają do Góry Przeznaczenia, podczas gdy Aragorn prowadzi armię przeciwko siłom Saurona.",
+  "actors": [
+    "Elijah Wood",
+    "Viggo Mortensen",
+    "Ian McKellen",
+    "Sean Astin"
+  ],
+  "image": "lotr-rotk.jpg",
+  "rentedNow": false,
+  "addedDate": {
+    "$date": "2024-11-29T13:33:12.287Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6749c29c496160a73dcaf3ef"
+  },
+  "title": "Furia",
+  "genre": "Wojenny",
+  "director": "David Ayer",
+  "duration": 134,
+  "rating": 7.6,
+  "description": "W końcowej fazie II wojny światowej załoga amerykańskiego czołgu prowadzi krwawą ofensywę przeciwko nazistowskim Niemcom.",
+  "actors": [
+    "Brad Pitt",
+    "Shia LaBeouf",
+    "Logan Lerman",
+    "Michael Peña"
+  ],
+  "image": "fury.jpg",
+  "rentedNow": false,
+  "addedDate": {
+    "$date": "2024-11-29T13:33:16.144Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6749c2a0496160a73dcaf3f1"
+  },
+  "title": "Na Fali",
+  "genre": "Animacja",
+  "director": "Ash Brannon",
+  "duration": 85,
+  "rating": 6.7,
+  "description": "Młody pingwin Cody Maverick marzy o zostaniu profesjonalnym surferem i bierze udział w swoich pierwszych zawodach.",
+  "actors": [
+    "Shia LaBeouf",
+    "Jeff Bridges",
+    "Zooey Deschanel",
+    "Jon Heder"
+  ],
+  "image": "surf-up.jpg",
+  "rentedNow": false,
+  "addedDate": {
+    "$date": "2024-11-29T13:33:20.358Z"
+  },
+  "__v": 0
+}]

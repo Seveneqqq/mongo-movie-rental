@@ -1,0 +1,64 @@
+[{
+  "_id": {
+    "$oid": "6741b48b20754a8b311e5abb"
+  },
+  "email": "a1@a2.pl",
+  "password": "$2b$10$MNYG8dv0jWLQ88Zkpu5aL.YGr1M5Kl1mszKyxJkQq0XtcJYKMb8MK",
+  "firstName": "Pawel",
+  "lastName": "Admin",
+  "address": "dasdasd",
+  "phoneNumber": "123123123",
+  "role": "user",
+  "registrationDate": {
+    "$date": "2024-11-23T10:55:07.267Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6741b4aa20754a8b311e5abf"
+  },
+  "email": "admin@admin.pl",
+  "password": "$2b$10$WHZy6EMZBnCu/4DJFCvKbemqq9v7odC2/wkNkc.6eHAdV8lPeViPO",
+  "firstName": "admin",
+  "lastName": "admin",
+  "address": "dasdasd",
+  "phoneNumber": "123543123",
+  "role": "admin",
+  "registrationDate": {
+    "$date": "2024-11-23T10:55:38.471Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "6741ebd00dc45627035e4c90"
+  },
+  "email": "test@test.pl",
+  "password": "$2b$10$k2YN6HT96PL0pgw6ovgyM.ceiq2Lrkb7Xsy8sbL/Ri/3xOm2rmQIm",
+  "firstName": "admin",
+  "lastName": "admin",
+  "address": "admin",
+  "phoneNumber": "admin",
+  "role": "user",
+  "registrationDate": {
+    "$date": "2024-11-23T14:50:56.859Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "674880567b8cd4c794b3a319"
+  },
+  "email": "test@test1.pl",
+  "password": "$2b$10$cEeIfX.pztBb28YJZJ/tgeWlSfwdatcAQt6GTXWeGsWIi91.SGdHe",
+  "firstName": "admin",
+  "lastName": "admin",
+  "address": "admin",
+  "phoneNumber": "admin",
+  "role": "user",
+  "registrationDate": {
+    "$date": "2024-11-28T14:38:14.005Z"
+  },
+  "__v": 0
+}]
