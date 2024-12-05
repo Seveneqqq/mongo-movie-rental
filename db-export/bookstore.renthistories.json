@@ -1,0 +1,176 @@
+[{
+  "_id": {
+    "$oid": "6741d5bc35c9d28a3a4506ab"
+  },
+  "user": {
+    "$oid": "6741b4aa20754a8b311e5abf"
+  },
+  "movie": {
+    "$oid": "6741bc81b4a97457e2647a9a"
+  },
+  "rentedAt": {
+    "$date": "2024-11-23T13:16:44.088Z"
+  },
+  "plannedReturnDate": {
+    "$date": "2024-12-07T13:16:44.088Z"
+  },
+  "isReturned": true,
+  "__v": 0,
+  "actualReturnDate": {
+    "$date": "2024-11-28T14:37:25.782Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6741ebed0dc45627035e4c96"
+  },
+  "user": {
+    "$oid": "6741ebd00dc45627035e4c90"
+  },
+  "movie": {
+    "$oid": "6741bc92b4a97457e2647a9c"
+  },
+  "rentedAt": {
+    "$date": "2024-11-23T14:51:25.425Z"
+  },
+  "plannedReturnDate": {
+    "$date": "2024-11-25T14:51:25.425Z"
+  },
+  "isReturned": true,
+  "__v": 0,
+  "actualReturnDate": {
+    "$date": "2024-11-28T14:59:09.689Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6741edf3ab08894023ac8c86"
+  },
+  "user": {
+    "$oid": "6741ebd00dc45627035e4c90"
+  },
+  "movie": {
+    "$oid": "6741bc98b4a97457e2647a9e"
+  },
+  "rentedAt": {
+    "$date": "2024-11-23T15:00:03.295Z"
+  },
+  "plannedReturnDate": {
+    "$date": "2024-11-25T15:00:03.295Z"
+  },
+  "isReturned": true,
+  "__v": 0,
+  "actualReturnDate": {
+    "$date": "2024-11-28T14:59:26.143Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "67433981930ad287b47a3eb9"
+  },
+  "user": {
+    "$oid": "6741b4aa20754a8b311e5abf"
+  },
+  "movie": {
+    "$oid": "6741bcaab4a97457e2647aa2"
+  },
+  "rentedAt": {
+    "$date": "2024-11-24T14:34:41.325Z"
+  },
+  "plannedReturnDate": {
+    "$date": "2024-11-26T14:34:41.325Z"
+  },
+  "isReturned": true,
+  "__v": 0,
+  "actualReturnDate": {
+    "$date": "2024-11-28T14:37:23.181Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6748805b7b8cd4c794b3a325"
+  },
+  "user": {
+    "$oid": "674880567b8cd4c794b3a319"
+  },
+  "movie": {
+    "$oid": "6741bc81b4a97457e2647a9a"
+  },
+  "rentedAt": {
+    "$date": "2024-11-28T14:38:19.610Z"
+  },
+  "plannedReturnDate": {
+    "$date": "2024-11-30T14:38:19.610Z"
+  },
+  "isReturned": true,
+  "__v": 0,
+  "actualReturnDate": {
+    "$date": "2024-11-28T14:38:31.501Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6748805c7b8cd4c794b3a32f"
+  },
+  "user": {
+    "$oid": "674880567b8cd4c794b3a319"
+  },
+  "movie": {
+    "$oid": "6741bca5b4a97457e2647aa0"
+  },
+  "rentedAt": {
+    "$date": "2024-11-28T14:38:20.252Z"
+  },
+  "plannedReturnDate": {
+    "$date": "2024-11-30T14:38:20.252Z"
+  },
+  "isReturned": true,
+  "__v": 0,
+  "actualReturnDate": {
+    "$date": "2024-11-28T14:38:30.797Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6749c95c64494facf4d487aa"
+  },
+  "user": {
+    "$oid": "6741b4aa20754a8b311e5abf"
+  },
+  "movie": {
+    "$oid": "6749c29c496160a73dcaf3ef"
+  },
+  "rentedAt": {
+    "$date": "2024-11-29T14:02:04.609Z"
+  },
+  "plannedReturnDate": {
+    "$date": "2024-12-01T14:02:04.609Z"
+  },
+  "isReturned": true,
+  "__v": 0,
+  "actualReturnDate": {
+    "$date": "2024-11-29T14:02:19.943Z"
+  }
+},
+{
+  "_id": {
+    "$oid": "6749c95d64494facf4d487b4"
+  },
+  "user": {
+    "$oid": "6741b4aa20754a8b311e5abf"
+  },
+  "movie": {
+    "$oid": "6741bc81b4a97457e2647a9a"
+  },
+  "rentedAt": {
+    "$date": "2024-11-29T14:02:05.132Z"
+  },
+  "plannedReturnDate": {
+    "$date": "2024-12-01T14:02:05.132Z"
+  },
+  "isReturned": true,
+  "__v": 0,
+  "actualReturnDate": {
+    "$date": "2024-11-29T14:02:20.602Z"
+  }
+}]
